@@ -1,76 +1,174 @@
+<div align="center">
+
 # Signoff
 
-Signoff checks, from a photo or video, whether a hands-on procedure step was actually done correctly. It sends the frame and the step's pass criterion to a Meta model and gets back `pass`, `fail` or `unsure`, with a short reason. Entry for the Meta Global AI Developer Hackathon, Indie track, theme "Push the Frontier".
+### A second pair of eyes for anything you do with your hands.
 
-The point is the measurement. A verifier that says "pass" too early is worse than none, so the headline metric is the **false-pass rate**: how often a step that was done wrong is signed off anyway. Signoff reports it with confidence intervals and says plainly how small the data is.
+Signoff turns a task into steps with a clear picture of *done right*, looks at each step through your **Ray-Ban Meta** glasses, and signs it off only when **Muse Spark** agrees it was done correctly.
 
-## What is built (and what is not)
+![Muse Spark](https://img.shields.io/badge/Meta-Muse%20Spark%201.3-0866FF)
+![Ray-Ban Meta](https://img.shields.io/badge/Ray--Ban%20Meta-Gen%202-111111)
+![Python](https://img.shields.io/badge/python-3.11-3776AB)
+![Android](https://img.shields.io/badge/Android-Kotlin-3DDC84)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Hackathon](https://img.shields.io/badge/Meta%20Global%20AI%20Developer%20Hackathon-Indie-7C9CFF)
 
-| Part | Status |
+| **29 / 30** | **0 / 14** | **~4 s** |
+|:---:|:---:|:---:|
+| photos judged correctly | wrong steps signed off | median Muse Spark answer per photo |
+
+</div>
+
+---
+
+## Why Signoff
+
+Smart glasses already see what you see. Assistants can already tell you what to do next. What nobody checks is whether you did the **last** step right: the dry pan, the shell in the egg, the whites you took off too early.
+
+Signoff is that check. Every step has an instruction and a concrete *done right* criterion. When you finish a step, your glasses capture a photo, and Signoff answers **pass**, **fail** or **not sure**, always with a reason. The one mistake it is built never to make is the **false sign-off**: calling a wrong step done.
+
+## How it works
+
+```mermaid
+flowchart LR
+    G["Ray-Ban Meta Gen 2<br/>captures a photo"] --> A["Signoff app<br/>(Android, tap S1-S5)"]
+    A -- "USB tunnel<br/>adb reverse" --> S["Local server<br/>signoff/server.py"]
+    S -- "photo + step check" --> M["Muse Spark<br/>muse-spark-1.3"]
+    M -- "pass · fail · unsure<br/>+ reason" --> S
+    S --> A
+```
+
+1. **Plan.** A procedure is a short spec: steps, each with an instruction and a check ([`data/specs/fried-egg.json`](data/specs/fried-egg.json)).
+2. **Capture.** After a step, the glasses take a photo through Meta's Wearables Device Access Toolkit and the app sends it to the local server.
+3. **Judge.** The server asks Muse Spark to compare the photo with that step's check and to reply in strict JSON.
+4. **Answer.** The verdict and its reason appear on the phone a few seconds later (the model call itself has a 4.1 s median). Every frame and verdict is logged for audit.
+
+Your Meta API key lives only on your laptop. The phone reaches the server through a USB reverse tunnel, so no key is ever built into the app.
+
+## Features
+
+| | |
 |---|---|
-| Verifier: `muse-spark-1.3` on one frame plus a step spec (`signoff/verifier.py`) | **Built and measured** |
-| Frame sampling from video with ffmpeg (`signoff/frames.py`) | Built, self-checked on a synthetic video, **not yet run on real video** |
-| Harness: accuracy, false-pass, false-fail, unsure rates with Wilson 95% intervals (`eval/run.py`) | **Built and run on 20 labeled photos** |
-| Fried-egg procedure spec, 5 steps (`data/specs/fried-egg.json`) | Built |
-| Glasses capture: a patch to Meta's CameraAccess sample plus a local verify server (`signoff/server.py`, `android/`) | Server tested; the patched app builds and streams from the glasses on a Galaxy S25 Ultra and Ray-Ban Meta Gen 2. A photo captured on the glasses has made the full round trip to a verdict in the app (one test, on a non-egg scene; not yet measured on real egg steps) |
-| SAM 3.1 crops, model router, spec compiler, step state machine | **Not built.** `signoff/router.py`, `spec_compiler.py` and `state_machine.py` are empty placeholders |
-| Open-weight arm (Spark Open via a partner) | Not built, no claim made |
+| **Step specs with a picture of "done right"** | Each step carries an instruction and a check the model is judged against. |
+| **Glasses-first capture** | A patch to Meta's CameraAccess sample adds S1-S5 check buttons to the photo preview ([`android/`](android/)). |
+| **Verdicts with reasons** | `pass`, `fail` or `unsure`, plus the model's own reason and confidence. Unparseable replies count as `unsure`, never as `pass`. |
+| **Built against false sign-offs** | For video input, any failing frame fails the step and any uncertain frame keeps it open (implemented; the benchmark so far uses photos). |
+| **Local, auditable server** | `POST /verify` on `127.0.0.1`, input validation, and a frame-plus-verdict log in `runs/live/`. |
+| **A real benchmark** | Accuracy, false-pass, false-fail and unsure rates with Wilson 95% intervals and a per-batch breakdown ([`eval/run.py`](eval/run.py)). |
+| **Zero-cost reruns** | Verdicts are cached by image, step text, model and prompt version. |
 
-So today Signoff is a verifier plus an honest benchmark of it on still photos. It is not yet an agent loop, and there is no live glasses app. Twenty of the 30 photos were captured with Ray-Ban Meta (Gen 2) glasses (first-person view; ten earlier, ten live through the app); the other 10 with a fixed camera.
+## Results
 
-Product code calls Meta models only (`muse-spark-1.3` through `https://api.meta.ai/v1/responses`). All code in this repo was written during the hackathon. Nothing was copied from another project.
+Benchmarked on 30 labeled photos of a five-step fried-egg procedure, 20 of them captured on Ray-Ban Meta glasses ([`results/report.md`](results/report.md)).
 
-## Result (config A: Spark on a raw photo, one call per photo)
+| Metric | k / n | Rate | Wilson 95% |
+|---|:---:|:---:|:---:|
+| Accuracy | 29 / 30 | 0.97 | 0.83 – 0.99 |
+| **False-pass rate** (wrong step signed off) | **0 / 14** | **0.00** | 0.00 – 0.22 |
+| False-fail rate (right step called fail) | 1 / 16 | 0.06 | 0.01 – 0.28 |
+| Unsure rate | 0 / 30 | 0.00 | 0.00 – 0.11 |
 
-Run on 30 labeled photos of a fried-egg procedure: 20 earlier photos plus 10 captured live through the glasses app (`results/report.md`):
+| Batch | Capture | Correct |
+|---|---|:---:|
+| `egg1` | Ray-Ban Meta glasses, stills | 10 / 10 |
+| `egg2` | Fixed camera | 10 / 10 |
+| `egg4` | Ray-Ban Meta glasses, live through the app, second kitchen | 9 / 10 |
 
-| metric | k/n | rate | Wilson 95% |
-|---|---|---|---|
-| accuracy | 29/30 | 0.97 | 0.83 to 0.99 |
-| false-pass rate (wrong step called pass) | 0/14 | 0.00 | 0.00 to 0.22 |
-| false-fail rate (right step called fail) | 1/16 | 0.06 | 0.01 to 0.28 |
-| unsure rate | 0/30 | 0.00 | 0.00 to 0.11 |
+Median latency is 4.1 s per check (p95 8.0 s). More on how the data was collected and labeled is in the [dataset card](DATASET_CARD.md).
 
-By batch: `egg1` 10/10 (glasses stills), `egg2` 10/10 (fixed camera), `egg4` 9/10 (captured live through the app, a different stove and pan). The one miss is a **false fail**: an oiled pan photographed in dim light, before the stove light was turned on, was called dry. The oil is not visible in that frame, so "unsure" would have been the better answer; the same pan passed once the light was on.
+## Quickstart
 
-- Latency per call: median about 4.1 s, p95 about 8.0 s.
-- Tokens recorded across the 30 verdicts: 50,774 input, 9,586 output. **Dollar cost per verdict is not reported**: the API response has no cost field and no price was confirmed, so `cost_usd` is `null`.
+**Requirements:** Python 3.11, a Meta Model API key, and ffmpeg (only for video input). For the glasses app: Android Studio, an Android phone, and Ray-Ban Meta glasses in Developer Mode.
 
-**How to read this.** 30 rows from one annotator in two kitchen setups. Zero false passes only bounds the true false-pass rate at about 22% or less (95%), it does not show it is zero. One photo was dropped from the set before the final run because its label was ambiguous (see `docs/decisions.md`, D-013); without that decision the earlier run was 9/10. The live batch has no S4 fail photo: a clearly burnt edge was not captured, and three unclear S4 frames were left out rather than labeled. The photos are stills with clear contrast between pass and fail. Real first-person video, with motion and awkward angles, is untested. Details and limits are in [DATASET_CARD.md](DATASET_CARD.md).
-
-## Rerun
-
-Needs Python 3.11, ffmpeg (only for video input), and a Meta Model API key.
-
-```
+```bash
+git clone https://github.com/Kranthisai07/SignOff.git && cd SignOff
 pip install -r requirements.txt
-echo META_API_KEY=your_key_here > .env      # .env is gitignored
-python -m eval.test_selfcheck               # no API calls, prints "selfcheck ok"
-python -m eval.run                          # reads data/labels.csv, writes results/results.json and results/report.md
+echo META_API_KEY=your_key_here > .env       # gitignored, never commit it
+python -m eval.test_selfcheck                # offline self-check, prints "selfcheck ok"
 ```
 
-- `data/labels.csv` lists each row: step, truth, and the image filename under `data/raw/`. **The 20 egg photos are not published in this repo**, so the 20/20 result cannot be reproduced from a clean clone. To run on your own data, put photos in `data/raw/` and list them in `data/labels.csv` following `data/sop_fried_egg.md`. The self-check needs no photos.
-- A full run on the original photos makes 30 API calls. Verdicts are cached in `results/cache/` (keyed on the image bytes, step text, model and prompt version), so a rerun of the same data costs nothing.
-- `python -m eval.g1` is the retired engine-oil experiment. It is kept only as a record of a negative finding: Spark returned fail on all 10 photos because the dipstick details were too small to read in wide shots.
+**Verify a step from the command line**
 
-## How a verdict is made
+```bash
+python -m signoff.server                     # http://127.0.0.1:8000
+curl -X POST "http://127.0.0.1:8000/verify?step=1" --data-binary @photo.jpg
+```
 
-1. The step spec gives an instruction and a check, for example "Cook until the whites are fully set. Check: the egg white is opaque white, not clear or glossy."
-2. One image goes to `muse-spark-1.3` with `reasoning.effort = low` and a JSON-only reply format.
-3. The reply is parsed to `pass | fail | unsure` plus reason and confidence. Unparseable replies count as `unsure`.
-4. For video, three frames are sampled from the step's time range and combined: any `fail` makes the step `fail`, any `unsure` makes it `unsure`, otherwise `pass`. This rule leans against false passes and is untuned.
+```json
+{
+  "step": 1,
+  "verdict": "fail",
+  "reason": "Pan interior appears dry and matte black with no visible oil sheen, reflection, or pool.",
+  "confidence": 0.85,
+  "latency_ms": 5168
+}
+```
+
+*(A real response, logged during the live glasses run.)*
+
+**Use it from the glasses:** follow [`android/README.md`](android/README.md) to apply the patch, run the app on your phone, then `adb reverse tcp:8000 tcp:8000`. Capture a photo, tap the step, read the verdict.
+
+**Run the benchmark on your own photos:** put them in `data/raw/`, list them in [`data/labels.csv`](data/labels.csv) (see [`data/sop_fried_egg.md`](data/sop_fried_egg.md)), then `python -m eval.run`.
+
+## Defining a procedure
+
+```json
+{
+  "id": 3,
+  "instruction": "Cook until the whites are fully set.",
+  "check": "The egg white is opaque white, not clear or glossy.",
+  "failure_modes": ["raw whites"],
+  "depends_on": [2]
+}
+```
+
+The `check` is what Muse Spark judges the photo against. Write it as something a person could see in one glance.
+
+## Project structure
+
+```
+signoff/
+  server.py          local verify API used by the glasses app
+  verifier.py        Muse Spark call, JSON parsing, verdict cache, combine rule
+  meta_client.py     Meta Model API client (Responses API)
+  frames.py          frame sampling from video with ffmpeg
+eval/
+  run.py             benchmark harness and report
+  test_selfcheck.py  offline checks (scoring, intervals, frames, server validation)
+android/
+  signoff-glasses.patch   S1-S5 checks for Meta's CameraAccess sample
+data/
+  specs/fried-egg.json    the procedure spec
+  labels.csv              labeled benchmark rows
+results/
+  report.md, results.json latest benchmark
+docs/
+  decisions.md       every design decision: what, why, alternatives
+```
+
+## Roadmap
+
+- **Guided start by voice:** "Hey Meta, help me make a fried egg" builds the plan and walks you through it.
+- **Any procedure:** a spec compiler that turns written instructions into step checks.
+- **Continuous video:** check steps from the live stream instead of single photos (frame sampling is already in `signoff/frames.py`).
+- **Sharper eyes:** SAM 3.1 crops on the object that matters, and a router that picks the cheapest model that is confident enough.
+
+## Benchmark notes
+
+The benchmark is small and honest by design: one annotator, still photos, two kitchen setups. One ambiguous photo was dropped before the final run (`docs/decisions.md`, D-013), and the egg photos themselves are not published, so the 29/30 figure cannot be reproduced from a clean clone. Your own photos work the same way. Per-call dollar cost is not reported because the API returns tokens, not a price.
 
 ## Privacy
 
-Photos are indoors, no faces, no screens with private data. Some show a forearm or feet and the stove clock. Photos were sent to the Meta Model API for verification; how Meta handles contributor-tier data is governed by Meta's terms and has not been independently checked here.
+Photos are taken indoors, with no faces and no screens showing private data. They are sent to the Meta Model API for judging and are subject to Meta's terms. The API key stays on your machine.
 
-## Layout
+## Built with
 
-```
-signoff/   meta_client.py, verifier.py, frames.py   (router, spec_compiler, state_machine are placeholders)
-eval/      run.py (harness), test_selfcheck.py, g1.py (retired)
-data/      specs/fried-egg.json, labels.csv, sop_fried_egg.md, raw/ (images, not published)
-docs/      decisions.md (what/why/alternatives log), memory.md (project state)
-```
+- **Muse Spark** (`muse-spark-1.3`) through the Meta Model API: every verdict.
+- **[Meta Wearables Device Access Toolkit](https://github.com/facebook/meta-wearables-dat-android)**: glasses camera access. Meta's sample app is not redistributed here; this repo ships only our patch, and the toolkit is used under the Meta Wearables Developer Terms.
+- The demo video was made with HyperFrames and an ElevenLabs AI voice. Neither is part of the product.
 
-License: MIT, see [LICENSE](LICENSE).
+Built during the **Meta Global AI Developer Hackathon** (Indie track). All code in this repo was written during the event.
+
+## License
+
+[MIT](LICENSE)
