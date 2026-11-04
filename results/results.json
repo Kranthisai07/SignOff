@@ -1,0 +1,560 @@
+{
+  "config": "A (Spark raw frames)",
+  "model": "muse-spark-1.3",
+  "prompt_version": "v1",
+  "annotator": "single (the user)",
+  "rows": 30,
+  "accuracy": {
+    "k": 29,
+    "n": 30,
+    "rate": 0.967,
+    "wilson95": [
+      0.833,
+      0.994
+    ]
+  },
+  "false_pass_rate": {
+    "k": 0,
+    "n": 14,
+    "rate": 0.0,
+    "wilson95": [
+      0.0,
+      0.215
+    ]
+  },
+  "false_fail_rate": {
+    "k": 1,
+    "n": 16,
+    "rate": 0.062,
+    "wilson95": [
+      0.011,
+      0.283
+    ]
+  },
+  "unsure_rate": {
+    "k": 0,
+    "n": 30,
+    "rate": 0.0,
+    "wilson95": [
+      -0.0,
+      0.114
+    ]
+  },
+  "frame_latency_ms": {
+    "p50": 4117.5,
+    "p95": 8047
+  },
+  "tokens": {
+    "input": 50774,
+    "output": 9586
+  },
+  "cost_usd": null,
+  "by_run": {
+    "egg1": {
+      "accuracy": {
+        "k": 10,
+        "n": 10,
+        "rate": 1.0,
+        "wilson95": [
+          0.722,
+          1.0
+        ]
+      },
+      "false_pass_rate": {
+        "k": 0,
+        "n": 5,
+        "rate": 0.0,
+        "wilson95": [
+          -0.0,
+          0.434
+        ]
+      },
+      "false_fail_rate": {
+        "k": 0,
+        "n": 5,
+        "rate": 0.0,
+        "wilson95": [
+          -0.0,
+          0.434
+        ]
+      },
+      "unsure_rate": {
+        "k": 0,
+        "n": 10,
+        "rate": 0.0,
+        "wilson95": [
+          -0.0,
+          0.278
+        ]
+      }
+    },
+    "egg2": {
+      "accuracy": {
+        "k": 10,
+        "n": 10,
+        "rate": 1.0,
+        "wilson95": [
+          0.722,
+          1.0
+        ]
+      },
+      "false_pass_rate": {
+        "k": 0,
+        "n": 5,
+        "rate": 0.0,
+        "wilson95": [
+          -0.0,
+          0.434
+        ]
+      },
+      "false_fail_rate": {
+        "k": 0,
+        "n": 5,
+        "rate": 0.0,
+        "wilson95": [
+          -0.0,
+          0.434
+        ]
+      },
+      "unsure_rate": {
+        "k": 0,
+        "n": 10,
+        "rate": 0.0,
+        "wilson95": [
+          -0.0,
+          0.278
+        ]
+      }
+    },
+    "egg4": {
+      "accuracy": {
+        "k": 9,
+        "n": 10,
+        "rate": 0.9,
+        "wilson95": [
+          0.596,
+          0.982
+        ]
+      },
+      "false_pass_rate": {
+        "k": 0,
+        "n": 4,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.49
+        ]
+      },
+      "false_fail_rate": {
+        "k": 1,
+        "n": 6,
+        "rate": 0.167,
+        "wilson95": [
+          0.03,
+          0.564
+        ]
+      },
+      "unsure_rate": {
+        "k": 0,
+        "n": 10,
+        "rate": 0.0,
+        "wilson95": [
+          -0.0,
+          0.278
+        ]
+      }
+    }
+  },
+  "per_step": [
+    {
+      "run_id": "egg1",
+      "step_id": 1,
+      "truth": "fail",
+      "error_type": "dry pan",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "The pan surface looks dry and matte with no visible oil pool or glossy oil sheen"
+      ]
+    },
+    {
+      "run_id": "egg1",
+      "step_id": 1,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "Small reflective oil pool and sheen visible in center of the pan"
+      ]
+    },
+    {
+      "run_id": "egg1",
+      "step_id": 2,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "A cracked egg with yolk and white is in the pan and no shell pieces are visible"
+      ]
+    },
+    {
+      "run_id": "egg1",
+      "step_id": 2,
+      "truth": "fail",
+      "error_type": "shell in egg",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "Egg is in the pan but a small white shell fragment is visible in the egg white."
+      ]
+    },
+    {
+      "run_id": "egg1",
+      "step_id": 5,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "Cooked egg is visible on the small square patterned plate on the counter, pan is empty."
+      ]
+    },
+    {
+      "run_id": "egg1",
+      "step_id": 5,
+      "truth": "fail",
+      "error_type": "egg still in pan",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "Egg is still in the frying pan on the stovetop, plate on the right is empty."
+      ]
+    },
+    {
+      "run_id": "egg1",
+      "step_id": 3,
+      "truth": "fail",
+      "error_type": "raw whites",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "The egg white in the pan is still clear, translucent and glossy liquid, not opaque white, showing the whites are not set."
+      ]
+    },
+    {
+      "run_id": "egg1",
+      "step_id": 3,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "egg white is uniformly opaque white with no clear or glossy translucent areas"
+      ]
+    },
+    {
+      "run_id": "egg1",
+      "step_id": 4,
+      "truth": "fail",
+      "error_type": "burnt edges",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "Edges are dark brown and crisped/burnt around entire perimeter, not white or golden."
+      ]
+    },
+    {
+      "run_id": "egg1",
+      "step_id": 4,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "Egg white is white with only light golden edges and no dark brown or black burnt areas."
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 1,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "Pan contains a large visible pool of oil with clear reflective sheen covering half the pan surface."
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 1,
+      "truth": "fail",
+      "error_type": "water not oil",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "Pan surface looks dry and matte with no oil sheen or pool; small beaded droplets resemble water, not oil."
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 2,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "A raw egg with intact yolk and white is in the pan and no shell pieces are visible."
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 2,
+      "truth": "fail",
+      "error_type": "shell in egg",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "An egg is in the pan but a small white shell fragment is visible on top of the yolk."
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 3,
+      "truth": "fail",
+      "error_type": "raw whites",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "The egg white is still mostly clear, translucent and glossy rather than opaque white, with only small patches turned white, indicating it is not fully set."
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 3,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "Egg white is uniformly opaque white with no clear or glossy translucent areas"
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 4,
+      "truth": "fail",
+      "error_type": "burnt edges",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "Left edge of the egg white is dark brown to black and charred, not white or golden, indicating burning."
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 4,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "Egg white is fully set with edges white to light golden, no dark brown or black burning visible."
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 5,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "A fried egg is clearly visible resting on the square striped plate beside the stove."
+      ]
+    },
+    {
+      "run_id": "egg2",
+      "step_id": 5,
+      "truth": "fail",
+      "error_type": "egg still in pan",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "The fried egg remains in the skillet on the stove while the square plate beside it is empty."
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 1,
+      "truth": "fail",
+      "error_type": "dry pan",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "Pan interior appears dry and matte black with no visible oil sheen, reflection, or pool."
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 1,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "Pan contains a visible dark oil pool with reflective sheen covering the center"
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 2,
+      "truth": "fail",
+      "error_type": "shell in egg",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "An egg-like mass is in the pan but a small white shell piece is visible on top of it."
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 2,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "Egg yolk and white are present in center of pan with no visible shell fragments"
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 3,
+      "truth": "fail",
+      "error_type": "raw whites",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "The egg white is still clear, translucent and glossy around the yolk with no opaque white set, indicating it is raw/undercooked."
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 3,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "The egg white is opaque white overall with no clear transparent patches, indicating fully set whites."
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 4,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "Egg white is predominantly white with light bubbling and no dark brown or black burnt edges visible"
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 5,
+      "truth": "fail",
+      "error_type": "egg still in pan",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "The fried egg is still in the frying pan on the stove, and the plate on the counter is empty."
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 5,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "pass",
+      "frame_verdicts": [
+        "pass"
+      ],
+      "reasons": [
+        "A fried egg is clearly on a gray plate on the countertop."
+      ]
+    },
+    {
+      "run_id": "egg4",
+      "step_id": 1,
+      "truth": "pass",
+      "error_type": "",
+      "verdict": "fail",
+      "frame_verdicts": [
+        "fail"
+      ],
+      "reasons": [
+        "Pan surface appears dry and matte with no visible oil sheen or pool reflecting light"
+      ]
+    }
+  ]
+}

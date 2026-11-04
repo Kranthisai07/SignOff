@@ -1,0 +1,11 @@
+{
+  "procedure_id": "fried-egg",
+  "title": "Fry an egg",
+  "steps": [
+    {"id": 1, "instruction": "Put oil in the pan.", "check": "The pan has a visible oil sheen or pool.", "failure_modes": ["dry pan"], "depends_on": []},
+    {"id": 2, "instruction": "Crack the egg into the pan without shell.", "check": "An egg is in the pan and no shell pieces are visible in or on it.", "failure_modes": ["shell in egg"], "depends_on": [1]},
+    {"id": 3, "instruction": "Cook until the whites are fully set.", "check": "The egg white is opaque white, not clear or glossy.", "failure_modes": ["raw whites"], "depends_on": [2]},
+    {"id": 4, "instruction": "Finish the egg without burning it.", "check": "Edges are white or golden, not dark brown or black.", "failure_modes": ["burnt edges"], "depends_on": [3]},
+    {"id": 5, "instruction": "Plate the egg.", "check": "The egg is on a plate.", "failure_modes": ["egg still in pan", "empty plate"], "depends_on": [4]}
+  ]
+}

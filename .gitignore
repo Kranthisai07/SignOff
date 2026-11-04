@@ -1,0 +1,10 @@
+.env
+.claude/settings.local.json
+data/raw/
+runs/
+results/cache/
+__pycache__/
+.venv/
+node_modules/
+local.properties
+*.keystore
