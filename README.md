@@ -13,9 +13,9 @@ Signoff turns a task into steps with a clear picture of *done right*, looks at e
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Hackathon](https://img.shields.io/badge/Meta%20Global%20AI%20Developer%20Hackathon-Indie-7C9CFF)
 
-[![Watch the 3-minute demo](https://img.youtube.com/vi/qyfzO0K2YvM/hqdefault.jpg)](https://youtu.be/qyfzO0K2YvM)
+[![Watch the 3-minute demo](https://img.youtube.com/vi/HepkUTl71zw/hqdefault.jpg)](https://youtu.be/HepkUTl71zw)
 
-**[▶ Watch the 3-minute demo](https://youtu.be/qyfzO0K2YvM)**
+**[▶ Watch the 3-minute demo](https://youtu.be/HepkUTl71zw)**
 
 | **29 / 30** | **0 / 14** | **~4 s** |
 |:---:|:---:|:---:|
